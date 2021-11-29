@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  traefik:
+    image: traefik:latest
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+      - 8081:8080
+    volumes:
+      - ./config/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./certs:/certs
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - CLOUDFLARE_EMAIL=stefano.pulze87@gmail.com
+      - CLOUDFLARE_API_KEY=e9218d9c0cd9598c5d08a62caa5fff249d9d9
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.$DOMAIN`)"
+      - "traefik.http.routers.traefik.tls.certresolver=cloudflare"
+      
+
+networks:
+  proxy:
+    external: true

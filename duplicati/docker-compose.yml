@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  duplicati:
+    image: lscr.io/linuxserver/duplicati
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Rome
+    volumes:
+      - /opt/home/config/duplicati:/config
+      - /opt/storage/duplicati/backups:/backups
+      - /opt/home/config:/source/home-config
+      - /opt/traefik/config:/source/traefik
+      - /opt/storage:/source/storage
+    #ports:
+    #  - 8200:8200
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.duplicati.rule=Host(`duplicati.example.com`)"
+      - "traefik.http.routers.duplicati.tls.certresolver=cloudflare"
+
+networks:
+  proxy:
+    external: true

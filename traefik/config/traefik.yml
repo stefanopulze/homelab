@@ -1,0 +1,33 @@
+# API and dashboard configuration
+api:
+  dashboard: true
+  insecure: true
+  
+entryPoints:
+  http:
+    address: ":80"
+  
+  https:
+    address: ":443"
+    
+    
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+ 
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+    
+certificatesResolvers:
+  cloudflare: 
+    acme:
+      email: stefano.pulze87@gmail.com
+      storage: /certs/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"
